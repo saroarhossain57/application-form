@@ -6,7 +6,7 @@
  * Version: 1.0.0
  * Author: Saroar Hossain
  * Author URI:  https://github.com/saroarhossain57
- * Text Domain: wp-application-form
+ * Text Domain: application-form
  * Domain Path: /languages
  * License: GPL2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html

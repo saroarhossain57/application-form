@@ -1,0 +1,54 @@
+.appli-form-container h2 {
+    text-align: center;
+}
+.appli-form-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+.appli-form-row label {
+    font-size: 19px;
+    font-weight: 500;
+    margin-bottom: 0.4em;
+}
+.appli-form-row input {
+    padding: 15px;
+    background-color: #e5e5e536;
+    border: 2px solid #ddd;
+    margin: 0;
+}
+.appli-form-row input:focus,
+.appli-form-row input:active {
+    outline: none;
+    border-color: #222;
+    background-color: #fff;
+}
+.appli-error {
+    color: #b70000;
+    margin: 0;
+}
+#appli-submit-button {
+    background-color: #0454e6;
+    color: #fff;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+.appli-global-notice {
+    margin: 0;
+    margin-left: 20px;
+    font-size: 18px;
+    font-weight: 500;
+}
+.appli-form-submit {
+    display: flex;
+    align-items: center;
+}
+.appli-global-notice.success {
+    color: #1bd61b;
+}
+.appli-global-notice.error {
+    color: #cd1212;
+}
