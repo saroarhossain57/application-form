@@ -6,7 +6,6 @@ defined( 'ABSPATH' ) || exit;
 class Form_Routes extends \WP_REST_Controller{
 
     private static $instance;
-    private $errors = [];
 
     public function register_routes(){
         
@@ -24,8 +23,30 @@ class Form_Routes extends \WP_REST_Controller{
 
     public function form_submit($request){
 
+        $errors = [];
+
         $form_data = $request->get_params();
         $file_data = $request->get_file_params();
+
+        error_log(print_r('formdata', true));
+        error_log(print_r($form_data, true));
+
+        error_log(print_r($file_data, true));
+        
+        $parameters = $request->get_json_params();
+
+        error_log(print_r($parameters, true));
+
+        $parameters = $request->get_body_params();
+        error_log(print_r($parameters, true));
+
+
+         // The individual sets of parameters are also available, if needed:
+//   $parameters = $request->get_url_params();
+//   $parameters = $request->get_query_params();
+//   $parameters = $request->get_body_params();
+//   $parameters = $request->get_json_params();
+//   $parameters = $request->get_default_params();
 
         $allowed_mine_types = ['image/gif', 'image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
 
@@ -54,20 +75,66 @@ class Form_Routes extends \WP_REST_Controller{
             $errors['postname'] = 'Post name is required';
         }
 
-        if(!isset($file_data))
+        if(!isset($file_data['cv']) || !in_array($file_data['cv']['type'], $allowed_mine_types)){
+            $errors['cv'] = 'Please attach a valid CV';
+        } else {
+            if($file_data['cv']['size'] > 10485760){
+                $errors['cv'] = 'Too large file! Please use maximum 10MB file.';
+            }
+        }
 
-        error_log(print_r('all params', true));
-        error_log(print_r($parameters, true));
+        // Upload file to upload folder 
+        if(!empty($file_data['cv']['name']) && !empty($file_data['cv']['tmp_name'])){
+            $upload_result = wp_upload_bits( $file_data['cv']['name'], null, file_get_contents($file_data['cv']['tmp_name']) );
+            if(isset($upload_result['error']) && !empty($upload_result['error'])){
+                $errors['common'] = 'File upload failed';
+            }
+        } 
         
-        $file_parameters = $request->get_file_params();
-        error_log(print_r('file params', true));
-        error_log(print_r($file_parameters, true));
+        // Check if there any error occured
+        if(!empty($errors)){
+            return new \WP_REST_Response([
+                'status' => 400,
+                'response' => [
+                    'errors' => $errors
+                ],
+            ]);
+        }
+
+        // Insert submission into table.
+        global $wpdb;
+        $tablename = $wpdb->prefix . "applicant_submissions";
+        $current_user = wp_get_current_user();
+
+        $firstname       = sanitize_text_field($form_data['firstname']);
+        $lastname        = sanitize_text_field($form_data['lastname']);
+        $present_address = sanitize_text_field($form_data['present_address']);
+        $email           = sanitize_email($form_data['email']);
+        $mobile          = sanitize_text_field($form_data['mobile']);
+        $postname        = sanitize_text_field($form_data['postname']);
+        $cv              = isset($upload_result['url']) ? $upload_result['url'] : '';
+
+        $submit_page = wp_title('', false);
+        $submit_by   = isset($current_user->display_name) ? $current_user->display_name : 'Guest';
         
-        
 
-        //error_log(print_r($request, true));
+        $sql = $wpdb->prepare("INSERT INTO `$tablename` (`firstname`, `lastname`, `present_address`, `email`, `mobile`, `postname`, `cv`, `submit_page`, `submit_by`) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)", $firstname, $lastname, $present_address, $email, $mobile, $postname, $cv, $submit_page, $submit_by);
 
-
+        if($wpdb->query($sql)){
+            return new \WP_REST_Response([
+                'status' => 200,
+                'response' => __('Form submitted successfully!', 'applicationf-form'),
+            ]);
+        } else {
+            return new \WP_REST_Response([
+                'status' => 500,
+                'response' => [
+                    'errors' => [
+                        'common' => __('Something went wrong', 'applicationf-form')
+                    ]
+                ],
+            ]);
+        }
         
     }
 

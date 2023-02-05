@@ -23,12 +23,12 @@ class DBTables {
 
         $sql = "CREATE TABLE IF NOT EXISTS $self->table_name (
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
-            first_name varchar(100) NOT NULL DEFAULT '',
-            last_name varchar(100) NOT NULL DEFAULT '',
+            firstname varchar(100) NOT NULL DEFAULT '',
+            lastname varchar(100) NOT NULL DEFAULT '',
             present_address varchar(255) DEFAULT NULL,
             email varchar(150) DEFAULT NULL,
             mobile varchar(50) DEFAULT NULL,
-            post_name varchar(100) DEFAULT NULL,
+            postname varchar(100) DEFAULT NULL,
             cv varchar(100) DEFAULT NULL,
             submission_time timestamp DEFAULT CURRENT_TIMESTAMP,
             submit_page varchar(100) DEFAULT NULL,

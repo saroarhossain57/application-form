@@ -1,6 +1,6 @@
 <div class="appli-form-container">
     <h2><?php _e('WeDevs Application Form', 'application-form') ?></h2>
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="<?php echo esc_url(get_rest_url( null, 'application-form/v1/submit' )); ?>" method="post" enctype="multipart/form-data" id="appli-application-form">
         <div class="appli-form-fields">
             <div class="appli-form-row appli-firstname">
                 <label for="firstname">First Name <span>*</span></label>
@@ -33,7 +33,7 @@
                 <p class="appli-error">Error message</p>
             </div>
             <div class="appli-form-row appli-cv">
-                <label for="cv">Your CV <span>*</span> (<small>Only images and PDF files are allowed</small>)</label>
+                <label for="cv">Your CV <span>*</span> (<small>Only images and PDF files are allowed. Maximum File Size Is 10MB</small>)</label>
                 <input type="file" id="cv" name="cv" value="" placeholder="Attach Your CV" accept="image/png, image/jpeg, application/pdf">
                 <p class="appli-error">Error message</p>
             </div>
