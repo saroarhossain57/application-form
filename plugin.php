@@ -45,7 +45,7 @@ final class Plugin {
         add_action('init', [$this, 'internationalization']);
 
         // Global inits for both frontend and backend\
-        
+        \Application_Form\Core\REST_API\REST_API_Init::instance()->initialize_api_routes();
         
         // Separate the frontend and backend inits for saving loading time
         if(is_admin()){

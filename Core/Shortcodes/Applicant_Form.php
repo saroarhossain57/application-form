@@ -20,7 +20,7 @@ class Applicant_Form {
 
         ob_start();
 
-            include \Application_Form\Plugin::plugin_dir() . 'templates/form-template-1.php';
+            include \Application_Form\Plugin::plugin_dir() . 'templates/form-template.php';
 
         $output = ob_get_clean();
 

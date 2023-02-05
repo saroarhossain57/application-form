@@ -11,6 +11,9 @@
     font-weight: 500;
     margin-bottom: 0.4em;
 }
+.appli-form-row label span{
+    color: rgb(187, 16, 16);
+}
 .appli-form-row input {
     padding: 15px;
     background-color: #e5e5e536;
@@ -26,6 +29,7 @@
 .appli-error {
     color: #b70000;
     margin: 0;
+    display: none;
 }
 #appli-submit-button {
     background-color: #0454e6;
@@ -41,6 +45,7 @@
     margin-left: 20px;
     font-size: 18px;
     font-weight: 500;
+    display: none;
 }
 .appli-form-submit {
     display: flex;
