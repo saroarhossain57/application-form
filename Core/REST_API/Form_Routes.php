@@ -28,26 +28,6 @@ class Form_Routes extends \WP_REST_Controller{
         $form_data = $request->get_params();
         $file_data = $request->get_file_params();
 
-        error_log(print_r('formdata', true));
-        error_log(print_r($form_data, true));
-
-        error_log(print_r($file_data, true));
-        
-        $parameters = $request->get_json_params();
-
-        error_log(print_r($parameters, true));
-
-        $parameters = $request->get_body_params();
-        error_log(print_r($parameters, true));
-
-
-         // The individual sets of parameters are also available, if needed:
-//   $parameters = $request->get_url_params();
-//   $parameters = $request->get_query_params();
-//   $parameters = $request->get_body_params();
-//   $parameters = $request->get_json_params();
-//   $parameters = $request->get_default_params();
-
         $allowed_mine_types = ['image/gif', 'image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
 
         // Validate input fields
@@ -113,12 +93,9 @@ class Form_Routes extends \WP_REST_Controller{
         $mobile          = sanitize_text_field($form_data['mobile']);
         $postname        = sanitize_text_field($form_data['postname']);
         $cv              = isset($upload_result['url']) ? $upload_result['url'] : '';
-
-        $submit_page = wp_title('', false);
         $submit_by   = isset($current_user->display_name) ? $current_user->display_name : 'Guest';
-        
 
-        $sql = $wpdb->prepare("INSERT INTO `$tablename` (`firstname`, `lastname`, `present_address`, `email`, `mobile`, `postname`, `cv`, `submit_page`, `submit_by`) values (%s, %s, %s, %s, %s, %s, %s, %s, %s)", $firstname, $lastname, $present_address, $email, $mobile, $postname, $cv, $submit_page, $submit_by);
+        $sql = $wpdb->prepare("INSERT INTO `$tablename` (`firstname`, `lastname`, `present_address`, `email`, `mobile`, `postname`, `cv`, `submit_by`) values (%s, %s, %s, %s, %s, %s, %s, %s)", $firstname, $lastname, $present_address, $email, $mobile, $postname, $cv, $submit_by);
 
         if($wpdb->query($sql)){
             return new \WP_REST_Response([

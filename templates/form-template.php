@@ -13,8 +13,8 @@
                 <p class="appli-error">Error message</p>
             </div>
             <div class="appli-form-row appli-present-address">
-                <label for="present-address">Present Address <span>*</span></label>
-                <input type="text" id="present-address" name="present-address" value="" placeholder="Enter Present Address">
+                <label for="present_address">Present Address <span>*</span></label>
+                <input type="text" id="present_address" name="present_address" value="" placeholder="Enter Present Address">
                 <p class="appli-error">Error message</p>
             </div>
             <div class="appli-form-row appli-email">

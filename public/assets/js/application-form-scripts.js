@@ -8,16 +8,18 @@ const formSubmitHandler = (event) => {
 
     applicationFormFrontEndValidation(formData);
 
-    // const { validationResult, generatedData } = applicationFormFrontEndValidation(formData);
-return;
+    const { validationResult, generatedData } = applicationFormFrontEndValidation(formData);
+
     if(!validationResult){
         // Throw front end errors
+       
+        return;
     }
 
     fetch(endpoint, {
         method: 'POST', // or 'PUT'
         headers: {},
-        body: generatedFormData,
+        body: generatedData,
     })
     .then((response) => response.json())
     .then((data) => {
@@ -34,19 +36,21 @@ appliApplicationForm.addEventListener('submit', formSubmitHandler);
 
 const applicationFormFrontEndValidation = formData => {
 
+    const errors = {};
+    const generatedData = new FormData();
+    let validationResult = false;
+
     for (const pair of formData.entries()) {
 
         let key = pair[0];
         let value = pair[1];
         const allowed_file_types = ['image/gif', 'image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
 
-        const errors = {};
-
         if(key === 'firstname'){
             if(!value){
                 errors.firstname = 'Firstname is required';
-            }
-        }
+            } 
+        } 
 
         if(key === 'lastname'){
             if(!value){
@@ -68,7 +72,7 @@ const applicationFormFrontEndValidation = formData => {
 
         if(key === 'mobile'){
             if(!value || !validateBangladeshiMobile(value)){
-                errors.email = 'Please enter a valid Bangladeshi phone number.';
+                errors.mobile = 'Please enter a valid Bangladeshi phone number.';
             }
         }
 
@@ -84,13 +88,37 @@ const applicationFormFrontEndValidation = formData => {
             }
         }
 
-        console.log(`${pair[0]}, ${pair[1]}`);
+        if(key === 'cv'){
+            if(!value.name){
+                errors.cv = 'Please attach a CV';
+            } else {
+                if(!allowed_file_types.includes(value.type)){
+                    errors.cv = 'Please a valid file. Only images and PDF are allowed';
+                } else {
+                    if(value.size > 10485760){
+                        errors.cv = 'Maximum 10MB file is allowed';
+                    }
+                }
+            }
+        }
+
+        if(key === 'cv'){
+            const fileInput = document.getElementById('cv');
+            generatedData.append(key, fileInput.files[0]);
+        } else {
+            generatedData.append(key, value);
+        }
+        
     }
 
-    // return {
-    //     validationResult,
-    //     generatedData
-    // }
+    if(Object.keys(errors).length === 0){
+        validationResult = true;
+    }
+
+    return {
+        validationResult,
+        generatedData
+    }
 };
 
 
