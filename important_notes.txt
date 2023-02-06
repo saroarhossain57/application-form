@@ -1,0 +1,7 @@
+# Need to add translation support for texts that being delivered from js file.
+# Fix submitted by. always using guest.
+
+
+
+// IF THERE THERE IS TIME.
+# If there is time then add submited page.

@@ -40,7 +40,7 @@
         </div>
         <div class="appli-form-submit">
             <button type="submit" id="appli-submit-button">Submit Application</button>
-            <p class="appli-global-notice error"></p>
+            <p class="appli-global-notice"></p>
         </div>
     </form>
 </div>

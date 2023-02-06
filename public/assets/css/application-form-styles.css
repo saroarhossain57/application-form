@@ -53,7 +53,9 @@
 }
 .appli-global-notice.success {
     color: #1bd61b;
+    display: block;
 }
 .appli-global-notice.error {
     color: #cd1212;
+    display: block;
 }

@@ -5,31 +5,14 @@ const formSubmitHandler = (event) => {
 
     const endpoint = appliApplicationForm.getAttribute('action');
     const formData = new FormData(event.target);
-    const allFields = ['firstname', 'lastname', 'present_address', 'email', 'mobile', 'postname', 'cv'];
 
     applicationFormFrontEndValidation(formData);
 
     const { validationResult, errors, generatedData } = applicationFormFrontEndValidation(formData);
 
     // Clear previous error messages
-    for(const field of allFields){
-        var defaultField =  document.getElementById(field);
-        if (typeof(defaultField) != 'undefined' && defaultField != null){
-            defaultField.nextElementSibling.style.display = 'none';
-            defaultField.nextElementSibling.textContent = '';
-        }
-    }
-
-    if(!validationResult && Object.keys(errors).length !== 0){
-        // Throw front end errors
-        for (const [key, value] of Object.entries(errors)) {
-            var inputField =  document.getElementById(key);
-
-            if (typeof(inputField) != 'undefined' && inputField != null){
-                inputField.nextElementSibling.style.display = 'block';
-                inputField.nextElementSibling.textContent = value;
-            }
-        }
+    if(!validationResult){
+        handleFormError(errors);
         return;
     }
 
@@ -40,7 +23,11 @@ const formSubmitHandler = (event) => {
     })
     .then((response) => response.json())
     .then((data) => {
-        console.log('Success:', data);
+        if(data.response.errors){
+            handleFormError(data.response.errors)
+        } else {
+            handleFormSuccess(data.response);
+        }
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -50,6 +37,55 @@ const formSubmitHandler = (event) => {
 }
 appliApplicationForm.addEventListener('submit', formSubmitHandler);
 
+
+const handleFormSuccess = data => {
+    const $globalNoticeEl = document.querySelector(".appli-global-notice");
+    $globalNoticeEl.classList.remove('error');
+    $globalNoticeEl.classList.add('success');
+    $globalNoticeEl.textContent = data;
+
+    const allFields = ['firstname', 'lastname', 'present_address', 'email', 'mobile', 'postname', 'cv'];
+    for(const field of allFields){
+        var defaultField =  document.getElementById(field);
+        if (typeof(defaultField) != 'undefined' && defaultField != null){
+            defaultField.value = '';
+            defaultField.nextElementSibling.style.display = 'none';
+            defaultField.nextElementSibling.textContent = '';
+        }
+    }
+}
+
+const handleFormError = (errors) => {
+
+    const allFields = ['firstname', 'lastname', 'present_address', 'email', 'mobile', 'postname', 'cv'];
+
+    const $globalNoticeEl = document.querySelector(".appli-global-notice");
+    $globalNoticeEl.classList.remove('error', 'succuss');
+
+    for(const field of allFields){
+        var defaultField =  document.getElementById(field);
+        if (typeof(defaultField) != 'undefined' && defaultField != null){
+            defaultField.nextElementSibling.style.display = 'none';
+            defaultField.nextElementSibling.textContent = '';
+        }
+    }
+   
+
+    if(Object.keys(errors).length !== 0){
+        // Throw front end errors
+        for (const [key, value] of Object.entries(errors)) {
+            var inputField =  document.getElementById(key);
+
+            if (typeof(inputField) != 'undefined' && inputField != null){
+                inputField.nextElementSibling.style.display = 'block';
+                inputField.nextElementSibling.textContent = value;
+            }
+        }
+
+        $globalNoticeEl.classList.add('error');
+        $globalNoticeEl.textContent = 'Opps! There is some error!';
+    }
+}
 
 const applicationFormFrontEndValidation = formData => {
 
@@ -110,7 +146,7 @@ const applicationFormFrontEndValidation = formData => {
                 errors.cv = 'Please attach a CV';
             } else {
                 if(!allowed_file_types.includes(value.type)){
-                    errors.cv = 'Please a valid file. Only images and PDF are allowed';
+                    errors.cv = 'Please use a valid file. Only images and PDF are allowed';
                 } else {
                     if(value.size > 10485760){
                         errors.cv = 'Maximum 10MB file is allowed';
