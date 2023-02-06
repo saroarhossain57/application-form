@@ -1,4 +1,5 @@
 const appliApplicationForm = document.getElementById('appli-application-form');
+let clearGlobalMessageTimer;
 
 const formSubmitHandler = (event) => {
     event.preventDefault();
@@ -53,6 +54,15 @@ const handleFormSuccess = data => {
             defaultField.nextElementSibling.textContent = '';
         }
     }
+
+    // Clear global message
+    clearTimeout(clearGlobalMessageTimer);
+    clearGlobalMessageTimer = setTimeout(function(){
+        const $globalNoticeEl = document.querySelector(".appli-global-notice");
+        $globalNoticeEl.classList.remove('error', 'success');
+        $globalNoticeEl.textContent = '';
+    }, 4000);
+    
 }
 
 const handleFormError = (errors) => {
