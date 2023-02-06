@@ -5,14 +5,31 @@ const formSubmitHandler = (event) => {
 
     const endpoint = appliApplicationForm.getAttribute('action');
     const formData = new FormData(event.target);
+    const allFields = ['firstname', 'lastname', 'present_address', 'email', 'mobile', 'postname', 'cv'];
 
     applicationFormFrontEndValidation(formData);
 
-    const { validationResult, generatedData } = applicationFormFrontEndValidation(formData);
+    const { validationResult, errors, generatedData } = applicationFormFrontEndValidation(formData);
 
-    if(!validationResult){
+    // Clear previous error messages
+    for(const field of allFields){
+        var defaultField =  document.getElementById(field);
+        if (typeof(defaultField) != 'undefined' && defaultField != null){
+            defaultField.nextElementSibling.style.display = 'none';
+            defaultField.nextElementSibling.textContent = '';
+        }
+    }
+
+    if(!validationResult && Object.keys(errors).length !== 0){
         // Throw front end errors
-       
+        for (const [key, value] of Object.entries(errors)) {
+            var inputField =  document.getElementById(key);
+
+            if (typeof(inputField) != 'undefined' && inputField != null){
+                inputField.nextElementSibling.style.display = 'block';
+                inputField.nextElementSibling.textContent = value;
+            }
+        }
         return;
     }
 
@@ -117,6 +134,7 @@ const applicationFormFrontEndValidation = formData => {
 
     return {
         validationResult,
+        errors,
         generatedData
     }
 };
