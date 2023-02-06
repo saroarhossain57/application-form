@@ -60,6 +60,9 @@ final class Plugin {
 
         // Register all backend scripts
         add_action('admin_enqueue_scripts', [$this, 'register_admin_scripts']);
+        
+        // Init admin menu
+        \Application_Form\Core\Admin\Menu::instance();
 
     }
 
@@ -87,9 +90,6 @@ final class Plugin {
     }
 
     public function register_frontend_scripts(){
-        
-        error_log(print_r(self::assets_dir(), true));
-        
 
         // Styles
         wp_register_style( 'application-form-styles', self::assets_dir() . 'css/application-form-styles.css' );

@@ -1,4 +1,5 @@
 # Need to add translation support for texts that being delivered from js file.
+# Check all the codes and fix all the translation issues.
 # Fix submitted by. always using guest.
 
 
