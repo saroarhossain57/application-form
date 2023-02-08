@@ -5,7 +5,7 @@ defined( 'ABSPATH' ) || exit;
 
 class Applicant_Form {
 
-   private static $instance;
+    private static $instance; // phpcs:ignore
 
     public function __construct(){
         // Register shortcode

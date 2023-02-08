@@ -1,7 +1,9 @@
 # Need to add translation support for texts that being delivered from js file.
 # Check all the codes and fix all the translation issues.
 # Fix submitted by. always using guest.
-
+# Use nonce verification for API.
+# Use object caching for submission queries.
+# Add loading effect to form while submit
 
 
 // IF THERE THERE IS TIME.

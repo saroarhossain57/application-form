@@ -44,7 +44,7 @@ final class Plugin {
     public function initialize_plugin(){
         add_action('init', [$this, 'internationalization']);
 
-        // Global inits for both frontend and backend\
+        // Initialize for both front end and backend.
         \Application_Form\Core\REST_API\REST_API_Init::instance()->initialize_api_routes();
         
         // Separate the frontend and backend inits for saving loading time
@@ -63,6 +63,9 @@ final class Plugin {
         
         // Init admin menu
         \Application_Form\Core\Admin\Menu::instance();
+
+        // register dashboard widgets
+        \Application_Form\Core\Admin\Submission_Dashbaord_Widget::instance();
 
     }
 
@@ -87,6 +90,7 @@ final class Plugin {
 
     public function register_admin_scripts(){
         // Register all admin scripts
+        wp_register_style( 'application-form-admin-styles', self::assets_dir() . 'css/application-form-admin-styles.css' );
     }
 
     public function register_frontend_scripts(){

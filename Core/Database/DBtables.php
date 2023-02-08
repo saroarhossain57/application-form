@@ -30,7 +30,6 @@ class DBTables {
             mobile varchar(50) DEFAULT NULL,
             postname varchar(100) DEFAULT NULL,
             cv varchar(100) DEFAULT NULL,
-            submit_by varchar(100) DEFAULT NULL,
             submission_time timestamp DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id)
         );";

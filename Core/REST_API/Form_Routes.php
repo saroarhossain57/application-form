@@ -93,9 +93,8 @@ class Form_Routes extends \WP_REST_Controller{
         $mobile          = sanitize_text_field($form_data['mobile']);
         $postname        = sanitize_text_field($form_data['postname']);
         $cv              = isset($upload_result['url']) ? $upload_result['url'] : '';
-        $submit_by   = isset($current_user->display_name) ? $current_user->display_name : 'Guest';
 
-        $sql = $wpdb->prepare("INSERT INTO `$tablename` (`firstname`, `lastname`, `present_address`, `email`, `mobile`, `postname`, `cv`, `submit_by`) values (%s, %s, %s, %s, %s, %s, %s, %s)", $firstname, $lastname, $present_address, $email, $mobile, $postname, $cv, $submit_by);
+        $sql = $wpdb->prepare("INSERT INTO `$tablename` (`firstname`, `lastname`, `present_address`, `email`, `mobile`, `postname`, `cv`) values (%s, %s, %s, %s, %s, %s, %s)", $firstname, $lastname, $present_address, $email, $mobile, $postname, $cv);
 
         if($wpdb->query($sql)){
             return new \WP_REST_Response([
