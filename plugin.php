@@ -67,6 +67,9 @@ final class Plugin {
         // register dashboard widgets
         \Application_Form\Core\Admin\Submission_Dashbaord_Widget::instance();
 
+        // Show Admin Notices
+        \Application_Form\Core\Admin\Admin_Notices::instance();
+
     }
 
     private function frontend_inits(){

@@ -23,8 +23,12 @@ class Form_Routes extends \WP_REST_Controller{
 
     public function form_submit($request){
 
-        $errors = [];
+        $nonce = $request->get_header( 'X-WP-Nonce' );
+        if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
+            return new \WP_Error( 'invalid_nonce', __( 'Invalid nonce.' ), [ 'status' => 400 ] );
+        }
 
+        $errors = [];
         $form_data = $request->get_params();
         $file_data = $request->get_file_params();
 

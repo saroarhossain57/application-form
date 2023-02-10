@@ -6,8 +6,7 @@ const formSubmitHandler = (event) => {
 
     const endpoint = appliApplicationForm.getAttribute('action');
     const formData = new FormData(event.target);
-
-    applicationFormFrontEndValidation(formData);
+    const nonceValue = document.querySelector('#appli-application-form #_wpnonce').value;
 
     const { validationResult, errors, generatedData } = applicationFormFrontEndValidation(formData);
 
@@ -19,10 +18,19 @@ const formSubmitHandler = (event) => {
 
     fetch(endpoint, {
         method: 'POST', // or 'PUT'
-        headers: {},
+        headers: {
+            'X-WP-Nonce': nonceValue
+        },
         body: generatedData,
     })
-    .then((response) => response.json())
+    .then((response) => {
+        if(response.ok){
+            return response.json();
+        } else {
+            return Promise.reject(response.statusText);
+        }
+        
+    })
     .then((data) => {
         if(data.response.errors){
             handleFormError(data.response.errors)
@@ -31,7 +39,9 @@ const formSubmitHandler = (event) => {
         }
     })
     .catch((error) => {
-        console.error('Error:', error);
+        if(error){
+            console.error('Error:', error);
+        }
     });
 
 

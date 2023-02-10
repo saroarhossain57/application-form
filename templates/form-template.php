@@ -1,6 +1,7 @@
 <div class="appli-form-container">
     <h2><?php _e('WeDevs Application Form', 'application-form') ?></h2>
     <form action="<?php echo esc_url(get_rest_url( null, 'application-form/v1/submit' )); ?>" method="post" enctype="multipart/form-data" id="appli-application-form">
+        <?php wp_nonce_field('wp_rest'); ?>
         <div class="appli-form-fields">
             <div class="appli-form-row appli-firstname">
                 <label for="firstname">First Name <span>*</span></label>

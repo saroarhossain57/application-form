@@ -8,7 +8,6 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 use Application_Form\Core\Models\Form_Submission;
-use Application_Form\Core\REST_API\Form_Routes;
 
 class Submission_List_Table extends \WP_List_Table {
 

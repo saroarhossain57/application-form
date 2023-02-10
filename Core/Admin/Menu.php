@@ -25,19 +25,17 @@ class Menu {
         add_action("admin_head-{$this->application_submissions_page}", [$this, 'enqueue_scripts']);
 
         if (isset($_REQUEST['action']) && !empty($_REQUEST['submission']) && $_REQUEST['action'] == 'delete'){
-            $id = isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
+            $id = isset( $_REQUEST['submission'] ) ? intval( $_REQUEST['submission'] ) : 0;
+            if ( \Application_Form\Core\Models\Form_Submission::delete( $id ) ) {
+                $redirected_to = admin_url( 'admin.php?page=application_submissions&application-deleted=true' );
+            } else {
+                $redirected_to = admin_url( 'admin.php?page=application_submissions&application-deleted=false' );
+            }
 
-
-            \Application_Form\Core\Models\Form_Submission::delete( $id );
-            // if ( \Application_Form\Core\Models\Form_Submission::delete( $id ) ) {
-            //     $redirected_to = admin_url( 'admin.php?page=application_submissions&application-deleted=true' );
-            // } else {
-            //     $redirected_to = admin_url( 'admin.php?page=application_submissions&application-deleted=false' );
-            // }
-
-            // wp_redirect( $redirected_to );
-            // exit;
+            wp_redirect( $redirected_to );
+            exit;
         }
+
     }
 
     public function enqueue_scripts(){

@@ -88,15 +88,8 @@ class Form_Submission {
     }
 
     public static function delete($id){
-
-        error_log(print_r('delete calling', true));
-        
-
         global $wpdb;
-
-        $wpdb->delete($wpdb->prefix . self::$table_name, [ 'id' => $id ], [ '%d' ]);
-
-        return false;
+        return $wpdb->delete($wpdb->prefix . self::$table_name, [ 'id' => $id ], [ '%d' ]);
     }
     
 }
