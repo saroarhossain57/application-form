@@ -1,2 +1,2 @@
-# application-form
- A Application Form Plugin
+# Application Form
+It is a simple WordPress plugin for an Job Application form. You can use it for collecting applications from applications with their details and CV in super easy way. All the details and it's features will be mentioned below.
