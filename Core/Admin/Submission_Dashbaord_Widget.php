@@ -36,7 +36,7 @@ class Submission_Dashbaord_Widget {
             ?>
 
                 <div class="appli-latest-application">
-                    <?php echo esc_html($name); ?> - <?php esc_html_e('Post: ', 'application-form'); ?><?php echo esc_html($submission->postname); ?> - <?php echo esc_html(wp_date( 'd M Y', strtotime( $submission->submission_time ) )); ?> - <a href="<?php echo esc_url($nonced_application_url); ?>"><?php esc_html_e('View', 'application-form') ?></a>
+                    <?php echo wp_kses_post($name); ?> - <?php esc_html_e('Post: ', 'application-form'); ?><?php echo esc_html($submission->postname); ?> - <?php echo esc_html(wp_date( 'd M Y', strtotime( $submission->submission_time ) )); ?> - <a href="<?php echo esc_url($nonced_application_url); ?>"><?php esc_html_e('View', 'application-form') ?></a>
                 </div><br>
             <?php endforeach; ?>
             </div>

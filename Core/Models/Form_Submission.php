@@ -10,11 +10,14 @@ class Form_Submission {
         $defaults = [
             'number'  => 10,
             'offset'  => 0,
-            'orderby' => 'submission_time',
+            'orderby' => 'id',
             'order'   => 'DESC',
             'search'  => ''
         ];
         $args = wp_parse_args( $args, $defaults );
+
+        $orderby = $wpdb->_real_escape($args['orderby']);
+        $order = $wpdb->_real_escape($args['order']);
 
         if(!empty($args['search'])){
             $items = $wpdb->get_results( 
@@ -24,28 +27,19 @@ class Form_Submission {
                     OR concat(firstname, ' ', lastname) LIKE %s
                     OR mobile LIKE %s
                     OR postname LIKE %s
-                    ORDER BY %s %s
-                    LIMIT %d, %d",
+                    ORDER BY {$orderby} {$order} LIMIT %d, %d", // @codingStandardsIgnoreLine WordPress.DB.PreparedSQL.InterpolatedNotPrepared // Already escapped using real escape.
                     '%' . $args['search'] . '%',
                     '%' . $args['search'] . '%',
                     '%' . $args['search'] . '%',
                     '%' . $args['search'] . '%',
-                    $args['orderby'],
-                    $args['order'],
                     $args['offset'], 
-                    $args['number']
+                    $args['number'],
                 )
             );
         } else {
+
             $items = $wpdb->get_results( 
-                $wpdb->prepare(
-                    "SELECT * FROM {$wpdb->prefix}applicant_submissions
-                    ORDER BY %s %s
-                    LIMIT %d, %d",
-                    $args['orderby'],
-                    $args['order'],
-                    $args['offset'], $args['number']
-                )
+                $wpdb->prepare("SELECT * FROM {$wpdb->prefix}applicant_submissions ORDER BY {$orderby} {$order} LIMIT %d, %d", $args['offset'], $args['number'] ) // @codingStandardsIgnoreLine WordPress.DB.PreparedSQL.InterpolatedNotPrepared // Already escapped using real escape.
             );
         }
         

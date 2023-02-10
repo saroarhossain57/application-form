@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="appli-form-submit">
-            <button type="submit" id="appli-submit-button"><?php esc_html_e('Enter First Name', 'td'); ?></button>
+            <button type="submit" id="appli-submit-button"><?php esc_html_e('Submit Application', 'td'); ?></button>
             <p class="appli-global-notice"></p>
         </div>
     </form>
