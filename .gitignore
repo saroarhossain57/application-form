@@ -1,1 +1,4 @@
 vendor
+wpcs
+composer.json
+composer.lock
