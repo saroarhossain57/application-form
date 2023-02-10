@@ -39,7 +39,7 @@ You will find all the application submissions in the dashboard. Please see a new
 ![Application Details](https://github.com/saroarhossain57/application-form/blob/main/public/github-images/screenshot-5.png?raw=true)
 
 
-### On the admin dashboard page you will see five latest applications in a dashboard widget.
+### On the admin dashboard page you will see five latest applications in a dashboard widget. The widget title is Latest Applications. It might be placed below. Please search on the admin dashbaord page for it.
 ![Dashbaord Widget](https://github.com/saroarhossain57/application-form/blob/main/public/github-images/screenshot-6.png?raw=true)
 
 
