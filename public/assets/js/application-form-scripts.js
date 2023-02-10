@@ -33,7 +33,7 @@ const formSubmitHandler = (event) => {
     })
     .then((data) => {
         if(data.response.errors){
-            handleFormError(data.response.errors)
+            handleFormError(data.response.errors);
         } else {
             handleFormSuccess(data.response);
         }
@@ -45,7 +45,7 @@ const formSubmitHandler = (event) => {
     });
 
 
-}
+};
 appliApplicationForm.addEventListener('submit', formSubmitHandler);
 
 
@@ -73,7 +73,7 @@ const handleFormSuccess = data => {
         $globalNoticeEl.textContent = '';
     }, 4000);
     
-}
+};
 
 const handleFormError = (errors) => {
 
@@ -105,7 +105,7 @@ const handleFormError = (errors) => {
         $globalNoticeEl.classList.add('error');
         $globalNoticeEl.textContent = 'Opps! There is some error!';
     }
-}
+};
 
 const applicationFormFrontEndValidation = formData => {
 
@@ -192,7 +192,7 @@ const applicationFormFrontEndValidation = formData => {
         validationResult,
         errors,
         generatedData
-    }
+    };
 };
 
 
