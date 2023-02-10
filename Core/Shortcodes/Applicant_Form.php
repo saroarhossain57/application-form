@@ -10,7 +10,6 @@ class Applicant_Form {
     public function __construct(){
         // Register shortcode
         add_shortcode('applicant_form', [$this, 'render_shortcode']);
-        
     }
 
     public function render_shortcode(){
@@ -25,7 +24,6 @@ class Applicant_Form {
         $output = ob_get_clean();
 
         return $output;
-
     }
 
     public static function instance(){

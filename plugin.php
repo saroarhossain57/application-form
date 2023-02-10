@@ -53,7 +53,6 @@ final class Plugin {
         } else {
             $this->frontend_inits();
         }
-        
     }
 
     private function backend_inits(){
@@ -69,7 +68,6 @@ final class Plugin {
 
         // Show Admin Notices
         \Application_Form\Core\Admin\Admin_Notices::instance();
-
     }
 
     private function frontend_inits(){
@@ -102,7 +100,6 @@ final class Plugin {
         wp_register_style( 'application-form-styles', self::assets_dir() . 'css/application-form-styles.css' );
 
         wp_register_script( 'application-form-scripts', self::assets_dir() . 'js/application-form-scripts.js', 'jquery', time(), true );
-
     }
 
     public static function instance(){

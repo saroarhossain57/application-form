@@ -1,17 +1,44 @@
 <?php
+/**
+ * Admin_Notices
+ *
+ * Generate admin notices.
+ * php version 7.4
+ * 
+ * @category Template_Class
+ * @package  Template_Class
+ * @author   Saroar Hossain <limonhossain57@gmail.com>
+ * @license  https://www.gnu.org/licenses/gpl-3.0.html GPLv3
+ * @link     none
+ */
 namespace Application_Form\Core\Admin;
 
 defined('ABSPATH') || exit;
 
-class Admin_Notices {
-    private static $instance;
+/**
+ * Creates admin notices for delete and failed user delete.
+ * 
+ * @class    Admin_Notices
+ * @category Template_Class
+ * @package  Template_Class
+ * @author   Saroar Hossain <limonhossain57@gmail.com>
+ * @license  https://www.gnu.org/licenses/gpl-3.0.html GPLv3
+ * @link     none
+ */
+class Admin_Notices
+{
+    private static $_instance;
 
-    public function __construct(){
-        add_action( 'admin_notices', [$this, 'show_submission_action_notices'] );
+    /**
+     * Class constractor
+     **/
+    public function __construct()
+    {
+        add_action('admin_notices', [$this, 'show_submission_action_notices']);
     }
 
-    public function show_submission_action_notices(){
-
+    public function show_submission_action_notices()
+    {
         if(isset( $_GET['application-deleted'] )){
             $boolean = (strtolower($_GET['application-deleted']) === 'false') ? false : true;
             if($boolean === true){
@@ -33,9 +60,9 @@ class Admin_Notices {
     }
 
     public static function instance(){
-        if (!self::$instance) {
-            self::$instance = new self();
+        if (!self::$_instance) {
+            self::$_instance = new self();
         }
-        return self::$instance;
+        return self::$_instance;
     }
 }

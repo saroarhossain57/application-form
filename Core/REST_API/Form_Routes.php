@@ -18,7 +18,6 @@ class Form_Routes extends \WP_REST_Controller{
             'callback'            => [$this, 'form_submit'],
             'permission_callback' => '__return_true',
         ]);
-
     }
 
     public function form_submit($request){
@@ -88,7 +87,6 @@ class Form_Routes extends \WP_REST_Controller{
         // Insert submission into table.
         global $wpdb;
         $tablename = $wpdb->prefix . "applicant_submissions";
-        $current_user = wp_get_current_user();
 
         $firstname       = sanitize_text_field($form_data['firstname']);
         $lastname        = sanitize_text_field($form_data['lastname']);
@@ -98,9 +96,7 @@ class Form_Routes extends \WP_REST_Controller{
         $postname        = sanitize_text_field($form_data['postname']);
         $cv              = isset($upload_result['url']) ? $upload_result['url'] : '';
 
-        $sql = $wpdb->prepare("INSERT INTO `$tablename` (`firstname`, `lastname`, `present_address`, `email`, `mobile`, `postname`, `cv`) values (%s, %s, %s, %s, %s, %s, %s)", $firstname, $lastname, $present_address, $email, $mobile, $postname, $cv);
-
-        if($wpdb->query($sql)){
+        if($wpdb->query($wpdb->prepare("INSERT INTO %s (`firstname`, `lastname`, `present_address`, `email`, `mobile`, `postname`, `cv`) values (%s, %s, %s, %s, %s, %s, %s)", $tablename, $firstname, $lastname, $present_address, $email, $mobile, $postname, $cv))){
             return new \WP_REST_Response([
                 'status' => 200,
                 'response' => __('Form submitted successfully!', 'applicationf-form'),
@@ -115,7 +111,6 @@ class Form_Routes extends \WP_REST_Controller{
                 ],
             ]);
         }
-        
     }
 
     public static function instance(){

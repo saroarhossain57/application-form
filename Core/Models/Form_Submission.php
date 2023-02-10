@@ -19,71 +19,83 @@ class Form_Submission {
         $args = wp_parse_args( $args, $defaults );
 
         if(!empty($args['search'])){
-            $sql = $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}" . self::$table_name . " 
-                WHERE present_address LIKE %s
-                OR concat(firstname, ' ', lastname) LIKE %s
-                OR mobile LIKE %s
-                OR postname LIKE %s
-                ORDER BY {$args['orderby']} {$args['order']}
-                LIMIT %d, %d",
-                '%' . $args['search'] . '%',
-                '%' . $args['search'] . '%',
-                '%' . $args['search'] . '%',
-                '%' . $args['search'] . '%',
-                $args['offset'], 
-                $args['number']
+            $items = $wpdb->get_results( 
+                $wpdb->prepare(
+                    "SELECT * FROM %s 
+                    WHERE present_address LIKE %s
+                    OR concat(firstname, ' ', lastname) LIKE %s
+                    OR mobile LIKE %s
+                    OR postname LIKE %s
+                    ORDER BY %s %s
+                    LIMIT %d, %d",
+                    $wpdb->prefix . self::$table_name,
+                    '%' . $args['search'] . '%',
+                    '%' . $args['search'] . '%',
+                    '%' . $args['search'] . '%',
+                    '%' . $args['search'] . '%',
+                    $args['orderby'],
+                    $args['order'],
+                    $args['offset'], 
+                    $args['number']
+                )
             );
         } else {
-            $sql = $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}" . self::$table_name . " 
-                ORDER BY {$args['orderby']} {$args['order']}
-                LIMIT %d, %d",
-                $args['offset'], $args['number']
+            $items = $wpdb->get_results( 
+                $wpdb->prepare(
+                    "SELECT * FROM %s 
+                    ORDER BY %s %s
+                    LIMIT %d, %d",
+                    $wpdb->prefix . self::$table_name,
+                    $args['orderby'],
+                    $args['order'],
+                    $args['offset'], $args['number']
+                )
             );
         }
         
-        $items = $wpdb->get_results( $sql );
-
         return $items;
     }
 
     public static function get_queried_count($args = []){
         global $wpdb;
+        $table_name = $wpdb->prefix . self::$table_name;
         $defaults = [
             'search'  => ''
         ];
         $args = wp_parse_args( $args, $defaults );
 
         if(!empty($args['search'])){
-            $sql = $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}" . self::$table_name . " 
-                WHERE present_address LIKE %s
-                OR concat(firstname, ' ', lastname) LIKE %s
-                OR mobile LIKE %s
-                OR postname LIKE %s",
-                '%' . $args['search'] . '%',
-                '%' . $args['search'] . '%',
-                '%' . $args['search'] . '%',
-                '%' . $args['search'] . '%',
+            $items = $wpdb->get_results( 
+                $wpdb->prepare(
+                    "SELECT * FROM %s 
+                    WHERE present_address LIKE %s
+                    OR concat(firstname, ' ', lastname) LIKE %s
+                    OR mobile LIKE %s
+                    OR postname LIKE %s",
+                    $wpdb->prefix . self::$table_name,
+                    '%' . $args['search'] . '%',
+                    '%' . $args['search'] . '%',
+                    '%' . $args['search'] . '%',
+                    '%' . $args['search'] . '%',
+                )
             );
         } else {
-            $sql = "SELECT * FROM {$wpdb->prefix}" . self::$table_name;
+            $items = $wpdb->get_results( "SELECT * FROM {$table_name}" );
         }
         
-        $items = $wpdb->get_results( $sql );
+    
         return count($items);
     }
 
     public static function get_by_id($id){
         global $wpdb;
-        $prepared = $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}". self::$table_name ." WHERE id = %d", $id );
-        return $wpdb->get_row($prepared);
+        return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM %s WHERE id = %d", $wpdb->prefix . self::$table_name, $id ) );
     }
 
     public static function get_total_count() {
         global $wpdb;
-        $count = (int) $wpdb->get_var( "SELECT count(id) FROM {$wpdb->prefix}" . self::$table_name );
+
+        $count = (int) $wpdb->get_var( $wpdb->prepare("SELECT count(id) FROM %s", $wpdb->prefix . self::$table_name) );
         return $count;
     }
 
