@@ -8,37 +8,31 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 }
 
 use Application_Form\Core\Models\Form_Submission;
+use Application_Form\Core\REST_API\Form_Routes;
+
 class Submission_List_Table extends \WP_List_Table {
 
-    // Define table columns
-    function get_columns(){
-        $columns = array(
-            'cb'              => '<input type="checkbox" />',
-            'name'            => __('Name', 'application-form'),
-            'present_address' => __('Present Address', 'application-form'),
-            'email'           => __('Email', 'application-form'),
-            'mobile'          => __('Mobile', 'application-form'),
-            'postname'        => __('Post Name', 'application-form'),
-            'cv'              => __('CV', 'application-form'),
-            'submission_time' => __('Date', 'application-form')
-        );
-        return $columns;
+    function __construct() {
+        parent::__construct([
+            'singular' => __('Application', 'application-form'),
+            'plural'   => __('Applications', 'application-form'),
+            'ajax'     => false
+        ]);
     }
 
-    // Bind table with columns, data and all
     function prepare_items(){
 
-        $search_string         = isset($_POST['s']) ? $_POST['s'] : '';
+        $search_string         = isset($_GET['s']) ? $_GET['s'] : '';
         $columns               = $this->get_columns();
         $sortable              = $this->get_sortable_columns();
         $primary               = 'name';
-        $this->_column_headers = array($columns, [], $sortable, $primary);
+        $this->_column_headers = [ $columns, [], $sortable, $primary ];
 
-        $submissions_per_page     = $this->get_items_per_page('submissions_per_page', 20);
+        $submissions_per_page     = $this->get_items_per_page('submissions_per_page', 10);
         $current_page = $this->get_pagenum();
         $offset       = ( $current_page - 1 ) * $submissions_per_page;
-        $total_items  = Form_Submission::get_total_count();
-
+        
+        // Preparing arguments for search
         $args = [
             'number' => $submissions_per_page,
             'offset' => $offset,
@@ -49,19 +43,55 @@ class Submission_List_Table extends \WP_List_Table {
             $args['order']   = $_REQUEST['order'];
         }
 
+        if( !empty($search_string) ){
+            $args['search'] = $search_string;
+        }
+
         $this->items = Form_Submission::get_all( $args );
 
+        $total_items = Form_Submission::get_queried_count( $args );
+
         // Create pagination with data
-        $this->set_pagination_args(array(
+        $this->set_pagination_args([
             'total_items' => $total_items, 
             'per_page'    => $submissions_per_page, 
             'total_pages' => ceil( $total_items / $submissions_per_page ) 
-        ));
-         
+        ]);
+    }
+
+    // Define table columns
+    function get_columns(){
+        $columns = [
+            'cb'              => '<input type="checkbox" />',
+            'name'            => __('Name', 'application-form'),
+            'present_address' => __('Present Address', 'application-form'),
+            'email'           => __('Email', 'application-form'),
+            'mobile'          => __('Mobile', 'application-form'),
+            'postname'        => __('Post Name', 'application-form'),
+            'cv'              => __('CV', 'application-form'),
+            'submission_time' => __('Date', 'application-form')
+        ];
+        return $columns;
+    }
+
+    protected function get_sortable_columns(){
+        $sortable_columns = [
+            'postname'        => [ 'postname', false ],
+            'submission_time' => [ 'submission_time', true ]
+        ];
+
+        return $sortable_columns;
+    }
+
+    // Add a checkbox in the first column
+    public function column_cb($submission){
+
+        return sprintf('<input type="checkbox" name="submission_id[]" value="%s" />', $submission->id);
     }
 
     // set value for each column
     protected function column_default( $submission, $column_name ) {
+
         switch ( $column_name ) {
             case 'name':
                 return $submission->firstname . ' ' . $submission->lastname;
@@ -72,20 +102,6 @@ class Submission_List_Table extends \WP_List_Table {
             default:
                 return isset( $submission->$column_name ) ? $submission->$column_name : '';
         }
-    }
-
-    // Add a checkbox in the first column
-    public function column_cb($submission){
-        return sprintf('<input type="checkbox" name="submission_id[]" value="%s" />', $submission->id);
-    }
-
-    // Define sortable column
-    protected function get_sortable_columns(){
-        $sortable_columns = array(
-            'postname'        => array('postname', false),
-            'submission_time' => array('submission_time', true)
-        );
-        return $sortable_columns;
     }
 
     // Adding action links to column
@@ -109,10 +125,29 @@ class Submission_List_Table extends \WP_List_Table {
 
     // To show bulk action dropdown
     public function get_bulk_actions(){
-        $actions = array(
+        return [
             'delete_all' => __('Delete', 'application-form'),
-            'draft_all'  => __('Move to Draft', 'application-form')
-        );
-        return $actions;
+        ];
+    }
+
+    function search_box( $text, $input_id ) {
+        $input_id = $input_id . '-search-input';
+        $search_string = ( isset( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '';
+        ?>
+        <form method="get">
+            <input type="hidden" name="page" value="application_submissions">
+            <input type="hidden" name="s" value="<?php esc_attr_e($search_string); ?>">
+            <?php wp_nonce_field( 'application_form_search', 'application_form_search_nonce' ); ?>
+            <p class="search-box">
+                <label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_html($text); ?>:</label>
+                <input type="search" id="<?php echo esc_attr( $input_id ); ?>" name="s" value="<?php _admin_search_query(); ?>">
+                <input type="submit" id="search-submit" class="button" value="<?php echo esc_attr_x( 'Search', 'submit button' ); ?>">
+            </p>
+        </form>
+        <?php
+    }
+
+    function no_items() {
+        _e( 'No application found', 'applicationf-form' );
     }
 }

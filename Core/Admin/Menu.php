@@ -23,7 +23,21 @@ class Menu {
 
         add_action("load-{$this->application_submissions_page}", [$this, 'application_form_screen_options']);        
         add_action("admin_head-{$this->application_submissions_page}", [$this, 'enqueue_scripts']);
-        
+
+        if (isset($_REQUEST['action']) && !empty($_REQUEST['submission']) && $_REQUEST['action'] == 'delete'){
+            $id = isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
+
+
+            \Application_Form\Core\Models\Form_Submission::delete( $id );
+            // if ( \Application_Form\Core\Models\Form_Submission::delete( $id ) ) {
+            //     $redirected_to = admin_url( 'admin.php?page=application_submissions&application-deleted=true' );
+            // } else {
+            //     $redirected_to = admin_url( 'admin.php?page=application_submissions&application-deleted=false' );
+            // }
+
+            // wp_redirect( $redirected_to );
+            // exit;
+        }
     }
 
     public function enqueue_scripts(){
@@ -48,9 +62,13 @@ class Menu {
 
     public function render_page_content(){
 
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'You are not allowed to view the page.' );
+        }
+
         if (isset($_REQUEST['action']) && !empty($_REQUEST['submission']) && $_REQUEST['action'] == 'view'){
             $single_item = new Submission_Single_Item();
-            $single_item->render($_REQUEST['submission']);
+            $single_item->render($_GET['submission']);
 
         } else {
             $all_submissions = new All_Submissions();
