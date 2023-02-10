@@ -51,7 +51,7 @@ class Menu {
     
         $args = array(
             'label' => __('Submissions per page', 'application-form'),
-            'default' => 2,
+            'default' => 10,
             'option' => 'submissions_per_page'
         );
         add_screen_option( 'per_page', $args );
