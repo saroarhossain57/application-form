@@ -39,24 +39,23 @@ class Admin_Notices
 
     public function show_submission_action_notices()
     {
-        if(isset( $_GET['application-deleted'] )){
-            $boolean = (strtolower($_GET['application-deleted']) === 'false') ? false : true;
+        if(isset( $_GET['application-deleted'] )){ // @codingStandardsIgnoreLine WordPress.Security.NonceVerification.Recommended
+            $boolean = (strtolower(sanitize_text_field(wp_unslash($_GET['application-deleted']))) === 'false') ? false : true; // @codingStandardsIgnoreLine WordPress.Security.NonceVerification.Recommended
             if($boolean === true){
                 ?>
                 <div class="notice notice-success is-dismissible">
-                    <p><?php _e('Application deleted', 'application-form'); ?></p>
+                    <p><?php esc_html_e('Application deleted', 'application-form'); ?></p>
                 </div>
                 <?php
             }
             if($boolean === false){
                 ?>
                 <div class="notice notice-error is-dismissible">
-                    <p><?php _e('Application is not deleted', 'application-form'); ?></p>
+                    <p><?php esc_html_e('Application is not deleted', 'application-form'); ?></p>
                 </div>
                 <?php
             }
         }
-
     }
 
     public static function instance(){

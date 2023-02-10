@@ -5,8 +5,6 @@ defined('ABSPATH') || exit;
 
 class Form_Submission {
 
-    private static $table_name = 'applicant_submissions';
-
     public static function get_all($args = []){
         global $wpdb;
         $defaults = [
@@ -21,14 +19,13 @@ class Form_Submission {
         if(!empty($args['search'])){
             $items = $wpdb->get_results( 
                 $wpdb->prepare(
-                    "SELECT * FROM %s 
+                    "SELECT * FROM {$wpdb->prefix}applicant_submissions 
                     WHERE present_address LIKE %s
                     OR concat(firstname, ' ', lastname) LIKE %s
                     OR mobile LIKE %s
                     OR postname LIKE %s
                     ORDER BY %s %s
                     LIMIT %d, %d",
-                    $wpdb->prefix . self::$table_name,
                     '%' . $args['search'] . '%',
                     '%' . $args['search'] . '%',
                     '%' . $args['search'] . '%',
@@ -42,10 +39,9 @@ class Form_Submission {
         } else {
             $items = $wpdb->get_results( 
                 $wpdb->prepare(
-                    "SELECT * FROM %s 
+                    "SELECT * FROM {$wpdb->prefix}applicant_submissions
                     ORDER BY %s %s
                     LIMIT %d, %d",
-                    $wpdb->prefix . self::$table_name,
                     $args['orderby'],
                     $args['order'],
                     $args['offset'], $args['number']
@@ -58,7 +54,6 @@ class Form_Submission {
 
     public static function get_queried_count($args = []){
         global $wpdb;
-        $table_name = $wpdb->prefix . self::$table_name;
         $defaults = [
             'search'  => ''
         ];
@@ -67,12 +62,11 @@ class Form_Submission {
         if(!empty($args['search'])){
             $items = $wpdb->get_results( 
                 $wpdb->prepare(
-                    "SELECT * FROM %s 
+                    "SELECT * FROM {$wpdb->prefix}applicant_submissions 
                     WHERE present_address LIKE %s
                     OR concat(firstname, ' ', lastname) LIKE %s
                     OR mobile LIKE %s
                     OR postname LIKE %s",
-                    $wpdb->prefix . self::$table_name,
                     '%' . $args['search'] . '%',
                     '%' . $args['search'] . '%',
                     '%' . $args['search'] . '%',
@@ -80,7 +74,7 @@ class Form_Submission {
                 )
             );
         } else {
-            $items = $wpdb->get_results( "SELECT * FROM {$table_name}" );
+            $items = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}applicant_submissions" );
         }
         
     
@@ -89,19 +83,19 @@ class Form_Submission {
 
     public static function get_by_id($id){
         global $wpdb;
-        return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM %s WHERE id = %d", $wpdb->prefix . self::$table_name, $id ) );
+        return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}applicant_submissions WHERE id = %d", $id ) );
     }
 
     public static function get_total_count() {
         global $wpdb;
 
-        $count = (int) $wpdb->get_var( $wpdb->prepare("SELECT count(id) FROM %s", $wpdb->prefix . self::$table_name) );
+        $count = (int) $wpdb->get_var( "SELECT count(id) FROM {$wpdb->prefix}applicant_submissions" );
         return $count;
     }
 
     public static function delete($id){
         global $wpdb;
-        return $wpdb->delete($wpdb->prefix . self::$table_name, [ 'id' => $id ], [ '%d' ]);
+        return $wpdb->delete($wpdb->prefix . 'applicant_submissions', [ 'id' => $id ], [ '%d' ]);
     }
     
 }

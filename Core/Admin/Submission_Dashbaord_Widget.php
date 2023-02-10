@@ -31,11 +31,12 @@ class Submission_Dashbaord_Widget {
             <?php 
             foreach($submissions as $submission) :
                 $appplication_url = get_admin_url() . 'admin.php?page=application_submissions&action=view&submission=' . $submission->id;
-                $name = sprintf('<a href="%s" title="%s">%s</a>', esc_url($appplication_url), __('Click to view details', 'application-form'), $submission->firstname . ' ' . $submission->lastname);
+                $nonced_application_url = wp_nonce_url($appplication_url, 'view_single_application');
+                $name = sprintf('<a href="%s" title="%s">%s</a>', esc_url($nonced_application_url), __('Click to view details', 'application-form'), $submission->firstname . ' ' . $submission->lastname);
             ?>
 
                 <div class="appli-latest-application">
-                    <?php echo $name; ?> - <?php _e('Post: ', 'application-form'); ?><?php echo esc_html($submission->postname); ?> - <?php echo wp_date( 'd M Y', strtotime( $submission->submission_time ) ); ?> - <a href="<?php echo esc_url($appplication_url); ?>"><?php echo __('View', 'application-form') ?></a>
+                    <?php echo esc_html($name); ?> - <?php esc_html_e('Post: ', 'application-form'); ?><?php echo esc_html($submission->postname); ?> - <?php echo esc_html(wp_date( 'd M Y', strtotime( $submission->submission_time ) )); ?> - <a href="<?php echo esc_url($nonced_application_url); ?>"><?php esc_html_e('View', 'application-form') ?></a>
                 </div><br>
             <?php endforeach; ?>
             </div>

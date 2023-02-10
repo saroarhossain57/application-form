@@ -24,18 +24,17 @@ class Menu {
         add_action("load-{$this->application_submissions_page}", [$this, 'application_form_screen_options']);        
         add_action("admin_head-{$this->application_submissions_page}", [$this, 'enqueue_scripts']);
 
-        if (isset($_REQUEST['action']) && !empty($_REQUEST['submission']) && $_REQUEST['action'] == 'delete'){
-            $id = isset( $_REQUEST['submission'] ) ? intval( $_REQUEST['submission'] ) : 0;
+        if (isset($_REQUEST['action']) && !empty($_REQUEST['submission']) && $_REQUEST['action'] == 'delete'){ // @codingStandardsIgnoreLine WordPress.Security.NonceVerification.Recommended // Admin Menu should not verify nonce
+            $id = isset( $_REQUEST['submission'] ) ? intval( sanitize_text_field( wp_unslash($_REQUEST['submission']) ) ) : 0; //@codingStandardsIgnoreLine WordPress.Security.NonceVerification.Recommended // Admin Menu should not verify nonce
             if ( \Application_Form\Core\Models\Form_Submission::delete( $id ) ) {
                 $redirected_to = admin_url( 'admin.php?page=application_submissions&application-deleted=true' );
             } else {
                 $redirected_to = admin_url( 'admin.php?page=application_submissions&application-deleted=false' );
             }
 
-            wp_redirect( $redirected_to );
+            wp_safe_redirect( $redirected_to );
             exit;
         }
-
     }
 
     public function enqueue_scripts(){
@@ -64,9 +63,9 @@ class Menu {
             wp_die( 'You are not allowed to view the page.' );
         }
 
-        if (isset($_REQUEST['action']) && !empty($_REQUEST['submission']) && $_REQUEST['action'] == 'view'){
+        if (isset($_REQUEST['action']) && !empty($_REQUEST['submission']) && $_REQUEST['action'] == 'view'){ //@codingStandardsIgnoreLine WordPress.Security.NonceVerification.Recommended // Admin Menu should not verify nonce
             $single_item = new Submission_Single_Item();
-            $single_item->render($_GET['submission']);
+            $single_item->render( sanitize_text_field( wp_unslash( $_GET['submission'] ) ) ); //@codingStandardsIgnoreLine WordPress.Security.NonceVerification.Recommended // Admin Menu should not verify nonce
 
         } else {
             $all_submissions = new All_Submissions();

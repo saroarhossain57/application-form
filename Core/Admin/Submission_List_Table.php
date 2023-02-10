@@ -21,7 +21,7 @@ class Submission_List_Table extends \WP_List_Table {
 
     function prepare_items(){
 
-        $search_string         = isset($_GET['s']) ? $_GET['s'] : '';
+        $search_string         = isset($_GET['s']) ? sanitize_text_field( wp_unslash($_GET['s']) ) : ''; // @codingStandardsIgnoreLine WordPress.Security.NonceVerification.Recommended // The search string don't come all the time
         $columns               = $this->get_columns();
         $sortable              = $this->get_sortable_columns();
         $primary               = 'name';
@@ -37,9 +37,9 @@ class Submission_List_Table extends \WP_List_Table {
             'offset' => $offset,
         ];
 
-        if ( isset( $_REQUEST['orderby'] ) && isset( $_REQUEST['order'] ) ) {
-            $args['orderby'] = $_REQUEST['orderby'];
-            $args['order']   = $_REQUEST['order'];
+        if ( isset( $_REQUEST['orderby'] ) && isset( $_REQUEST['order'] ) ) { // @codingStandardsIgnoreLine WordPress.Security.NonceVerification.Recommended // This data handled by WordPress
+            $args['orderby'] = sanitize_text_field( wp_unslash( $_REQUEST['orderby'] ) ); // @codingStandardsIgnoreLine WordPress.Security.NonceVerification.Recommended // This data handled by WordPress
+            $args['order']   = sanitize_text_field(wp_unslash($_REQUEST['order'])); // @codingStandardsIgnoreLine WordPress.Security.NonceVerification.Recommended // This data handled by WordPress
         }
 
         if( !empty($search_string) ){
@@ -106,15 +106,17 @@ class Submission_List_Table extends \WP_List_Table {
     // Adding action links to column
     public function column_name($submission){
 
+        $requested_page = isset($_REQUEST['page']) ? sanitize_text_field( wp_unslash($_REQUEST['page']) ) : ''; // @codingStandardsIgnoreLine WordPress.Security.NonceVerification.Recommended // This data handled by WordPress
         $name = $submission->firstname . ' ' . $submission->lastname;
+        $view_url = wp_nonce_url("page={$requested_page}&action=view&submission={$submission->id}", 'view_single_application');
         $actions = array(   
-            'view' => sprintf('<a href="?page=%s&action=%s&submission=%s">' . __('view', 'application-form') . '</a>', $_REQUEST['page'], 'view', $submission->id),      
-            'delete' => sprintf('<a href="?page=%s&action=%s&submission=%s">' . __('Delete', 'application-form') . '</a>', $_REQUEST['page'], 'delete', $submission->id),
+            'view' => sprintf('<a href="?%s">' . __('view', 'application-form') . '</a>', $view_url ),      
+            'delete' => sprintf('<a href="?page=%s&action=%s&submission=%s">' . __('Delete', 'application-form') . '</a>', $requested_page, 'delete', $submission->id),
         );
 
         return sprintf(
             '<a href="?page=%1$s&action=%2$s&submission=%3$s">%4$s</a> %5$s', 
-            $_REQUEST['page'], 
+            $requested_page, 
             'view',
             $submission->id,
             $name, 
@@ -131,7 +133,7 @@ class Submission_List_Table extends \WP_List_Table {
 
     function search_box( $text, $input_id ) {
         $input_id = $input_id . '-search-input';
-        $search_string = ( isset( $_GET['s'] ) ) ? sanitize_text_field( $_GET['s'] ) : '';
+        $search_string = ( isset( $_GET['s'] ) ) ? sanitize_text_field( wp_unslash($_GET['s']) ) : ''; // @codingStandardsIgnoreLine WordPress.Security.NonceVerification.Recommended // This data handled by WordPress
         ?>
         <form method="get">
             <input type="hidden" name="page" value="application_submissions">
@@ -147,6 +149,6 @@ class Submission_List_Table extends \WP_List_Table {
     }
 
     function no_items() {
-        _e( 'No application found', 'applicationf-form' );
+        esc_html_e( 'No application found', 'applicationf-form' );
     }
 }

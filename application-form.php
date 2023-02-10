@@ -29,7 +29,6 @@ final class Application_Form {
         register_activation_hook( __FILE__, [ $this, 'run_activatation' ] );
 
         add_action( 'plugins_loaded', [ \Application_Form\Plugin::instance(), 'initialize_plugin' ] );
-
     }
 
     public function run_activatation(){

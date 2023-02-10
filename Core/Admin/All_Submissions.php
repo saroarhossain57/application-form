@@ -11,7 +11,7 @@ class All_Submissions {
         $submission_list_table->prepare_items();
         ?>
         <div class="wrap">
-            <h2><?php _e('Application Submissions', 'application-form') ?></h2>
+            <h2><?php esc_html_e('Application Submissions', 'application-form') ?></h2>
             <?php
                 $submission_list_table->search_box('search', 'search_id');
                 $submission_list_table->display();   
